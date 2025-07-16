@@ -1,306 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Vocal Tract Diagram</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        /* General body styling */
-        body {
-            font-family: 'Inter', sans-serif; /* Using Inter font */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* Full viewport height */
-            background-color: #f0f4f8; /* Light blue-gray background */
-            margin: 0;
-            padding: 20px; /* Padding around the main content */
-            box-sizing: border-box; /* Include padding in element's total width and height */
-        }
-
-        /* Main container for the application */
-        .container {
-            background-color: #ffffff; /* White background for the container */
-            padding: 30px;
-            border-radius: 15px; /* Rounded corners */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
-            text-align: center;
-            max-width: 900px; /* Max width for larger screens */
-            width: 100%; /* Full width on smaller screens */
-            display: flex;
-            flex-direction: column;
-            gap: 25px; /* Space between sections */
-        }
-
-        /* Title styling */
-        h1 {
-            color: #2c3e50; /* Dark blue-gray color */
-            margin-top: 0;
-            font-weight: 600; /* Semi-bold font weight */
-            font-size: 2.2em; /* Larger font size */
-        }
-
-        /* Vocal tract diagram area styling */
-        .vocal-tract-diagram {
-            border: 1px solid #e0e7eb; /* Light border */
-            border-radius: 10px; /* Rounded corners */
-            padding: 15px;
-            background-color: #ecf0f1; /* Light gray background */
-            overflow: hidden; /* Ensure SVG content stays within bounds */
-        }
-
-        /* SVG element styling */
-        #vocalTractSVG {
-            width: 100%; /* Make SVG responsive */
-            height: auto; /* Maintain aspect ratio */
-            background-color: #ffffff; /* White background inside SVG area */
-            border-radius: 8px; /* Slightly rounded corners for SVG */
-            display: block; /* Remove extra space below SVG */
-        }
-
-        /* Styling for individual vocal parts (SVG paths) */
-        .vocal-part {
-            fill: #a0c4ff; /* Default light blue fill color */
-            stroke: #4a69bd; /* Medium blue stroke */
-            stroke-width: 1.5; /* Slightly thicker stroke */
-            cursor: pointer; /* Indicate clickable element */
-            transition: fill 0.3s ease, stroke-width 0.3s ease, stroke 0.3s ease; /* Smooth transitions */
-        }
-
-        /* Hover effect for vocal parts */
-        .vocal-part:hover {
-            fill: #72aaff; /* Lighter blue on hover */
-            stroke: #3b5998; /* Darker blue stroke on hover */
-        }
-
-        /* Active (clicked) state for vocal parts */
-        .vocal-part.active {
-            fill: #4c8cff; /* Darker blue when active */
-            stroke-width: 2.5; /* Thicker stroke when active */
-            stroke: #003366; /* Even darker blue stroke */
-        }
-
-        /* Information display area styling */
-        .info-display {
-            margin-top: 15px;
-            padding: 20px;
-            background-color: #e0f7fa; /* Light cyan background */
-            border: 1px solid #b2ebf2; /* Cyan border */
-            border-radius: 10px; /* Rounded corners */
-            text-align: left;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05); /* Inner shadow */
-        }
-
-        /* Styling for the part name in info display */
-        #partName {
-            font-weight: 600; /* Semi-bold */
-            color: #00796b; /* Dark teal color */
-            margin-bottom: 8px;
-            font-size: 1.3em; /* Slightly larger font */
-        }
-
-        /* Styling for the part description in info display */
-        #partDescription {
-            color: #34495e; /* Dark gray color */
-            line-height: 1.7; /* Improved readability */
-            font-size: 0.95em; /* Slightly smaller font */
-        }
-
-        /* Responsive adjustments for smaller screens */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em; /* Adjust title size */
-            }
-
-            .container {
-                padding: 20px; /* Reduce padding */
-                gap: 15px; /* Reduce gap */
-            }
-
-            .info-display {
-                padding: 15px; /* Reduce info display padding */
-            }
-        }
-    </style>
+<html><head>
+<meta charset="UTF-8">
+<meta name="authoring-tool" content="Adobe_Animate_CC">
+<title>vocaltract_HTML5 Canvas</title>
+<!-- write your code here -->
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<script src="vocaltract_HTML5 Canvas.js"></script>
+<script>
+var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+function init() {
+	canvas = document.getElementById("canvas");
+	anim_container = document.getElementById("animation_container");
+	dom_overlay_container = document.getElementById("dom_overlay_container");
+	var comp=AdobeAn.getComposition("DFB8CE6C45414327B59E8C83C49AE22A");
+	var lib=comp.getLibrary();
+	var loader = new createjs.LoadQueue(false);
+	loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
+	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+	var lib=comp.getLibrary();
+	loader.loadManifest(lib.properties.manifest);
+}
+function handleFileLoad(evt, comp) {
+	var images=comp.getImages();	
+	if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }	
+}
+function handleComplete(evt,comp) {
+	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
+	var lib=comp.getLibrary();
+	var ss=comp.getSpriteSheet();
+	var queue = evt.target;
+	var ssMetadata = lib.ssMetadata;
+	for(i=0; i<ssMetadata.length; i++) {
+		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+	}
+	exportRoot = new lib.vocaltract_HTML5Canvas();
+	stage = new lib.Stage(canvas);
+	stage.enableMouseOver();	
+	//Registers the "tick" event listener.
+	fnStartAnimation = function() {
+		stage.addChild(exportRoot);
+		createjs.Ticker.framerate = lib.properties.fps;
+		createjs.Ticker.addEventListener("tick", stage);
+	}	    
+	//Code to support hidpi screens and responsive scaling.
+	AdobeAn.makeResponsive(true,'width',true,1,[canvas,anim_container,dom_overlay_container]);	
+	AdobeAn.compositionLoaded(lib.properties.id);
+	fnStartAnimation();
+}
+</script>
+<!-- write your code here -->
 </head>
-<body>
-    <div class="container">
-        <h1>Interactive Vocal Tract</h1>
-        <div class="vocal-tract-diagram">
-            <!-- SVG for the Vocal Tract Diagram -->
-            <!-- This version aims for a more anatomically plausible representation of a human head and vocal organs. -->
-            <svg id="vocalTractSVG" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
-                <!-- Outer outline of the head/face (simplified profile) -->
-                <path d="M700 100 C 750 200 750 400 700 500 L 600 550 C 550 580 450 580 400 550 L 300 450 C 250 400 200 300 200 200 C 200 100 300 50 400 50 C 500 50 650 50 700 100 Z"
-                      fill="#f5f5f5" stroke="#ccc" stroke-width="2"></path>
+<body onload="init();" style="margin:0px;" data-som-added="true">
+	<div id="animation_container" style="background-color: rgb(255, 255, 255); width: 970px; height: 582px;">
+		<canvas id="canvas" width="1940" height="1164" style="position: absolute; display: block; background-color: rgb(255, 255, 255); width: 970px; height: 582px;"></canvas>
+		<div id="dom_overlay_container" style="pointer-events: none; overflow: hidden; width: 970px; height: 582px; position: absolute; left: 0px; top: 0px; display: block;">
+		</div>
+	</div>
 
-                <!-- Inner outline of the oral cavity and pharynx -->
-                <path d="M300 280 C 350 250 450 250 500 280 L 500 450 C 480 480 420 480 400 450 L 350 350 Z"
-                      fill="#e0e0e0" stroke="#bbb" stroke-width="1.5"></path>
-
-                <!-- Lips (more curved) -->
-                <path id="lips" class="vocal-part"
-                      d="M250 270 C 270 250 300 250 320 270 C 300 290 270 290 250 270Z"
-                      data-info="The lips are highly mobile articulators, crucial for producing bilabial (e.g., 'p', 'b', 'm') and labiodental (e.g., 'f', 'v') sounds. Their shape (rounded, spread, neutral) significantly impacts vowel quality.">
-                </path>
-
-                <!-- Teeth (upper and lower, more defined) -->
-                <path id="teeth" class="vocal-part"
-                      d="M320 255 L 350 255 L 350 265 L 320 265 Z M320 275 L 350 275 L 350 285 L 320 285 Z"
-                      data-info="The teeth, particularly the upper incisors, are involved in dental (e.g., 'th' in 'thin', 'this') and labiodental sounds (with the lower lip). They provide a fixed point of articulation for the tongue and lips.">
-                </path>
-
-                <!-- Tongue (more natural, curved shape) -->
-                <path id="tongue" class="vocal-part"
-                      d="M330 300 C 350 350 400 380 450 350 C 480 320 480 280 450 250 C 400 220 350 250 330 300Z"
-                      data-info="The tongue is the most flexible and versatile articulator, capable of moving in almost any direction. Its tip, blade, front, back, and root articulate with various parts of the oral cavity (alveolar ridge, palate, velum) to produce the vast majority of speech sounds and modify vowel quality.">
-                </path>
-
-                <!-- Hard Palate / Roof of Mouth (curved) -->
-                <path id="hard-palate" class="vocal-part"
-                      d="M350 230 C 400 210 480 210 520 230 L 520 240 C 480 220 400 220 350 240 Z"
-                      data-info="The hard palate is the bony, arched front part of the roof of the mouth. It is a common place of articulation for palatal sounds (e.g., 'y' in 'yes') and serves as a firm, immovable surface against which the tongue can articulate.">
-                </path>
-
-                <!-- Velum (Soft Palate, hanging down slightly) -->
-                <path id="velum" class="vocal-part"
-                      d="M520 230 C 550 250 550 280 520 300 Z"
-                      data-info="The velum (soft palate) is the soft, muscular part at the back of the roof of the mouth. It acts as a valve, controlling the airflow to the nasal cavity. When raised, it blocks airflow to the nose (oral sounds); when lowered, it allows airflow through the nose (nasal sounds like 'm', 'n', 'ng').">
-                </path>
-
-                <!-- Pharynx (more distinct tube shape) -->
-                <path id="pharynx" class="vocal-part"
-                      d="M520 300 L 550 300 L 550 450 L 520 450 Z"
-                      data-info="The pharynx is the muscular tube extending from the nasal and oral cavities down to the larynx. It acts as a resonating chamber, and its shape can be modified by the tongue and velum to influence vowel quality and produce pharyngeal consonants.">
-                </path>
-
-                <!-- Larynx (more block-like at the bottom of the pharynx) -->
-                <path id="larynx" class="vocal-part"
-                      d="M530 460 L 550 460 L 550 500 L 530 500 Z"
-                      data-info="The larynx, or 'voice box,' houses the vocal folds (vocal cords). Vibration of the vocal folds produces voiced sounds, while their open position results in voiceless sounds. It is essential for phonation and protecting the airway.">
-                </path>
-
-                <!-- Nasal Cavity (more integrated into the head shape) -->
-                <path id="nasal-cavity" class="vocal-part"
-                      d="M480 150 C 500 130 550 130 570 150 L 570 200 C 550 220 500 220 480 200 Z"
-                      data-info="The nasal cavity is the space above the oral cavity, extending from the nostrils to the nasopharynx. Airflow through here produces nasal sounds (e.g., 'm', 'n', 'ng') when the velum is lowered, allowing air to resonate within this chamber.">
-                </path>
-
-                <!-- Alveolar Ridge (small bump behind teeth) -->
-                <path id="alveolar-ridge" class="vocal-part"
-                      d="M350 230 Q 360 225 370 230 L 370 240 Q 360 245 350 240 Z"
-                      data-info="The alveolar ridge is the bony ridge located just behind the upper front teeth. It is a common place of articulation for sounds like 't', 'd', 's', 'z', 'n', and 'l', where the tongue makes contact or comes close to it.">
-                </path>
-
-            </svg>
-        </div>
-
-        <div class="info-display">
-            <p id="partName">Click on a part of the vocal tract to learn more!</p>
-            <p id="partDescription"></p>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Select all elements that represent a vocal part and are clickable
-            const vocalParts = document.querySelectorAll('.vocal-part');
-            // Get references to the HTML elements where part name and description will be displayed
-            const partNameDisplay = document.getElementById('partName');
-            const partDescriptionDisplay = document.getElementById('partDescription');
-            // Variable to keep track of the currently active (clicked) part
-            let activePart = null;
-
-            // Define a JavaScript object to store detailed information for each vocal part.
-            // The keys of this object should match the 'id' attributes of the SVG paths.
-            const partInformation = {
-                lips: {
-                    name: "Lips",
-                    description: "The lips are highly mobile articulators, crucial for producing bilabial (e.g., 'p', 'b', 'm') and labiodental (e.g., 'f', 'v') sounds. They can be rounded, spread, or neutral. Their flexibility allows for a wide range of articulations."
-                },
-                teeth: {
-                    name: "Teeth",
-                    description: "The teeth, particularly the upper incisors, are involved in dental (e.g., 'th' in 'thin', 'this') and labiodental sounds (with the lower lip). They provide a fixed point of articulation for the tongue and lips."
-                },
-                tongue: {
-                    name: "Tongue",
-                    description: "The tongue is the most flexible and versatile articulator, capable of moving in almost any direction. Its tip, blade, front, back, and root articulate with various parts of the oral cavity (alveolar ridge, palate, velum) to produce the vast majority of speech sounds and modify vowel quality."
-                },
-                'hard-palate': { // Use quotes for keys with hyphens
-                    name: "Hard Palate",
-                    description: "The hard palate is the bony, arched front part of the roof of the mouth. It is a common place of articulation for palatal sounds (e.g., 'y' in 'yes') and serves as a firm, immovable surface against which the tongue can articulate."
-                },
-                velum: {
-                    name: "Velum (Soft Palate)",
-                    description: "The velum (soft palate) is the soft, muscular part at the back of the roof of the mouth. It acts as a valve, controlling the airflow to the nasal cavity. When raised, it blocks airflow to the nose (oral sounds); when lowered, it allows airflow through the nose (nasal sounds like 'm', 'n', 'ng')."
-                },
-                pharynx: {
-                    name: "Pharynx",
-                    description: "The pharynx is the muscular tube extending from the nasal and oral cavities down to the larynx. It acts as a resonating chamber, and its shape can be modified by the tongue and velum to influence vowel quality and produce pharyngeal consonants."
-                },
-                larynx: {
-                    name: "Larynx (Voice Box)",
-                    description: "The larynx, or 'voice box,' houses the vocal folds (vocal cords). Vibration of the vocal folds produces voiced sounds, while their open position results in voiceless sounds. It is essential for phonation and protecting the airway."
-                },
-                'nasal-cavity': {
-                    name: "Nasal Cavity",
-                    description: "The nasal cavity is the space above the oral cavity, extending from the nostrils to the nasopharynx. Airflow through here produces nasal sounds (e.g., 'm', 'n', 'ng') when the velum is lowered, allowing air to resonate within this chamber."
-                },
-                'alveolar-ridge': {
-                    name: "Alveolar Ridge",
-                    description: "The alveolar ridge is the bony ridge located just behind the upper front teeth. It is a common place of articulation for sounds like 't', 'd', 's', 'z', 'n', and 'l', where the tongue makes contact or comes close to it."
-                }
-            };
-
-            // Iterate over each vocal part and attach a click event listener
-            vocalParts.forEach(part => {
-                part.addEventListener('click', () => {
-                    // If there was a previously active part, remove its 'active' class
-                    if (activePart) {
-                        activePart.classList.remove('active');
-                    }
-
-                    // Add the 'active' class to the currently clicked part to highlight it
-                    part.classList.add('active');
-                    // Set the current part as the active part
-                    activePart = part;
-
-                    // Get the ID of the clicked part (e.g., "lips", "tongue")
-                    const partId = part.id;
-
-                    // Retrieve information from the 'partInformation' object using the partId
-                    const info = partInformation[partId];
-
-                    // Display the information in the designated HTML elements
-                    if (info) {
-                        partNameDisplay.textContent = info.name;
-                        partDescriptionDisplay.textContent = info.description;
-                    } else {
-                        // Fallback if information for a part is not found (shouldn't happen if IDs match)
-                        partNameDisplay.textContent = "Information not available for this part.";
-                        partDescriptionDisplay.textContent = "Please select another part.";
-                    }
-                });
-            });
-
-            // Optional: Add a click listener to the SVG background itself
-            // This allows users to click outside any specific part to deselect and clear information.
-            const vocalTractSVG = document.getElementById('vocalTractSVG');
-            vocalTractSVG.addEventListener('click', (event) => {
-                // Check if the click target is the SVG element itself, not one of its child paths
-                if (event.target === vocalTractSVG) {
-                    // If there's an active part, remove its 'active' class
-                    if (activePart) {
-                        activePart.classList.remove('active');
-                        activePart = null; // Clear the active part reference
-                    }
-                    // Reset the information display to its initial state
-                    partNameDisplay.textContent = "Click on a part of the vocal tract to learn more!";
-                    partDescriptionDisplay.textContent = "";
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+<div id="preloadjs-container" style="visibility: hidden; position: absolute; height: 10px; width: 10px; overflow: hidden; transform: translate(-10px, -10px);"></div></body></html>
